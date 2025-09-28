@@ -1,9 +1,4 @@
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { CardDescription, CardTitle } from "@/components/ui/card";
 import { Bot } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, Circle, Lightbulb } from "lucide-react";

@@ -42,7 +42,7 @@ const typefaces = [
 ];
 
 export default function ChatBotBuilderAppearance() {
-  const [botName, setBotName] = useState("AI");
+  const [botName] = useState("AI");
   const [brandColor, setBrandColor] = useState("#3b5d50");
   const [contrastColor, setContrastColor] = useState("#fefefe");
   const [launcherLabel, setLauncherLabel] = useState("Need product guidance?");
@@ -50,12 +50,12 @@ export default function ChatBotBuilderAppearance() {
   const [widgetPosition, setWidgetPosition] =
     useState<WidgetPosition>("bottom-right");
   const [typeface, setTypeface] = useState<TypefaceOption>("Inter");
-  const [suggestedQuestions, setSuggestedQuestions] = useState<string[]>([
+  const [suggestedQuestions] = useState<string[]>([
     "What can you do?",
     "Show me quick tips",
   ]);
-  const [welcomeEnabled, setWelcomeEnabled] = useState(true);
-  const [welcomeMessage, setWelcomeMessage] = useState(
+  const [welcomeEnabled] = useState(true);
+  const [welcomeMessage] = useState(
     "Hi there! I'm your new assistant. Ask me anything."
   );
 

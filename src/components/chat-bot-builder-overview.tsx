@@ -10,7 +10,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { CheckCircle2, Circle } from "lucide-react";
 import { useState } from "react";
-import { Separator } from "./ui/separator";
 
 export default function ChatBotBuilderOverview() {
   const [botName, setBotName] = useState("");

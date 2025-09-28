@@ -1,7 +1,6 @@
 import * as React from "react";
 import {
   IconCamera,
-  IconChartBar,
   IconCode,
   IconDashboard,
   IconDatabase,
@@ -11,7 +10,6 @@ import {
   IconFolder,
   IconHelp,
   IconInnerShadowTop,
-  IconListDetails,
   IconMessageCircle,
   IconReport,
   IconSearch,

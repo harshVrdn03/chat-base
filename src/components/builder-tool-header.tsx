@@ -2,7 +2,7 @@ import { Plus } from "lucide-react";
 import { Button } from "./ui/button";
 import { QuestionBuilderHelper } from "@/helpers";
 import type { QuestionType } from "@/types";
-import { BuilderStoreManager, useBuilderStore } from "@/stores";
+import { BuilderStoreManager } from "@/stores";
 
 const BuilderToolHeader = () => {
   const builderStoreManager = new BuilderStoreManager();

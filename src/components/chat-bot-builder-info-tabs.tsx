@@ -1,6 +1,3 @@
-"use client";
-
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { BookOpen, Palette, Settings, Sliders } from "lucide-react";
 import { useState } from "react";
 import ChatBotBuilderOverview from "./chat-bot-builder-overview";
@@ -28,7 +25,7 @@ export default function ChatBotBuilderInfoTabs() {
 
   return (
     <StyledTabs value={activeTab} onChange={setActiveTab} tabs={tabs}>
-      <StyledTabPanel value={activeTab}>{tabsMaps[activeTab]}</StyledTabPanel>
+      <StyledTabPanel>{tabsMaps[activeTab]}</StyledTabPanel>
     </StyledTabs>
   );
 }

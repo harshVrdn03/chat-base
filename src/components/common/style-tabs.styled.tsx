@@ -70,12 +70,6 @@ export function StyledTabs({
   );
 }
 
-export function StyledTabPanel({
-  value,
-  children,
-}: {
-  value: string;
-  children: ReactNode;
-}) {
+export function StyledTabPanel({ children }: { children: ReactNode }) {
   return <>{children}</>;
 }
