@@ -1,6 +1,16 @@
-import { ChatBotLayout } from "@/layouts";
-import { ChatBotPage, ChatBotNew } from "@/pages";
-import type { RouteObject } from "react-router-dom";
+import {
+  ChatBotDetailLayout,
+  ChatBotLayout,
+  ChatBotUserResponsesLayout,
+  ChatBotUsersLayout,
+} from "@/layouts";
+import {
+  ChatBotPage,
+  ChatBotNew,
+  ChatBotUsersPage,
+  ChatBotUserResponsesPage,
+} from "@/pages";
+import { Navigate, type RouteObject } from "react-router-dom";
 
 export const chatBotRoutes: RouteObject[] = [
   {
@@ -14,6 +24,44 @@ export const chatBotRoutes: RouteObject[] = [
       {
         element: <ChatBotNew />,
         path: "new",
+      },
+      {
+        element: <ChatBotDetailLayout />,
+        path: ":chatBotId",
+        children: [
+          {
+            element: <Navigate to="/chat-bot" />,
+            index: true,
+          },
+          {
+            element: <ChatBotNew />,
+            path: "edit",
+          },
+          {
+            element: <ChatBotUsersLayout />,
+            path: "users",
+            children: [
+              {
+                index: true,
+                element: <ChatBotUsersPage />,
+              },
+              {
+                element: <ChatBotUserResponsesLayout />,
+                path: ":chatBotUserId",
+                children: [
+                  {
+                    element: <Navigate to="/chat-bot" />,
+                    index: true,
+                  },
+                  {
+                    element: <ChatBotUserResponsesPage />,
+                    index: true,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
       },
     ],
   },

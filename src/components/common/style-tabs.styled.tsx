@@ -29,9 +29,9 @@ export function StyledTabs({
       {/* Tab List */}
       <div
         className={cn(
-          "hide-scrollbar flex gap-2 rounded-lg bg-muted/50 p-2",
-          "overflow-x-auto w-full", // mobile = horizontal scroll
-          "lg:flex lg:flex-col lg:w-48 lg:h-fit lg:overflow-visible" // desktop sidebar
+          "hide-scrollbar min-h-11 flex gap-2 rounded-lg bg-muted/50 p-2",
+          "overflow-x-auto w-full", 
+          "lg:flex lg:flex-col lg:w-48 lg:h-fit lg:overflow-visible" 
         )}
       >
         {tabs.map((tab) => {
@@ -41,7 +41,7 @@ export function StyledTabs({
               key={tab.id}
               onClick={() => onChange(tab.id)}
               className={cn(
-                "flex items-center gap-2 px-4 py-2 text-sm font-medium transition whitespace-nowrap",
+                " flex items-center gap-2 px-4 py-2 text-sm font-medium transition whitespace-nowrap",
                 "hover:bg-muted/80",
                 value === tab.id
                   ? "bg-background shadow-sm rounded-full lg:rounded-md"

@@ -1,4 +1,4 @@
-import { EQuestionType } from "@/constants";
+import { EFormQuestionType } from "@/enums";
 import type { BaseQuestion, Question, QuestionType } from "@/types";
 import { v4 as uuidv4 } from "uuid";
 
@@ -140,27 +140,27 @@ class QuestionBuilderHelper {
   // ---- Dispatcher ---- //
   private getDefaultConfig(questionType: QuestionType): any {
     switch (questionType) {
-      case EQuestionType.MULTI_CHOICE:
+      case EFormQuestionType.MULTI_CHOICE:
         return this.MultiChoiceDefaultConfig();
-      case EQuestionType.TEXT:
+      case EFormQuestionType.TEXT:
         return this.TextDefaultConfig();
-      case EQuestionType.RATING:
+      case EFormQuestionType.RATING:
         return this.RatingDefaultConfig();
-      case EQuestionType.OPINION_SCALE:
+      case EFormQuestionType.OPINION_SCALE:
         return this.OpinionScaleDefaultConfig();
-      case EQuestionType.YES_NO:
+      case EFormQuestionType.YES_NO:
         return this.YesNoDefaultConfig();
-      case EQuestionType.DROPDOWN:
+      case EFormQuestionType.DROPDOWN:
         return this.DropdownDefaultConfig();
-      case EQuestionType.FILE_UPLOAD:
+      case EFormQuestionType.FILE_UPLOAD:
         return this.FileUploadDefaultConfig();
-      case EQuestionType.DATE:
+      case EFormQuestionType.DATE:
         return this.DateDefaultConfig();
-      case EQuestionType.MATRIX:
+      case EFormQuestionType.MATRIX:
         return this.MatrixDefaultConfig();
-      case EQuestionType.RANKING:
+      case EFormQuestionType.RANKING:
         return this.RankingDefaultConfig();
-      case EQuestionType.PICTURE_CHOICE:
+      case EFormQuestionType.PICTURE_CHOICE:
         return this.PictureChoiceDefaultConfig();
       default:
         return null;

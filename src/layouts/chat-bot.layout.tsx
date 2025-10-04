@@ -4,7 +4,9 @@ import { SidebarInset } from "@/components/ui/sidebar";
 import { ChatBotHeader } from "@/components/chat-bot-header";
 import { Outlet } from "react-router-dom";
 
+
 const ChatBotLayout = () => {
+
   return (
     <SidebarProvider
       style={
@@ -16,9 +18,10 @@ const ChatBotLayout = () => {
     >
       <AppSidebar variant="sidebar" />
       <SidebarInset className="flex flex-col h-screen">
+        
         <ChatBotHeader />
         <main className="flex-1 overflow-auto">
-          <Outlet />
+          <Outlet  />
         </main>
       </SidebarInset>
     </SidebarProvider>

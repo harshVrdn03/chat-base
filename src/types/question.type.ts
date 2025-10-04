@@ -1,4 +1,4 @@
-import { EQuestionType } from "@/constants";
+import { EFormQuestionType } from "@/enums";
 import { z } from "zod";
 
 const BaseQuestionSchema = z.object({
@@ -11,7 +11,7 @@ const BaseQuestionSchema = z.object({
 });
 
 const MultipleChoiceSchema = BaseQuestionSchema.extend({
-  type: z.literal(EQuestionType.MULTI_CHOICE),
+  type: z.literal(EFormQuestionType.MULTI_CHOICE),
   config: z.object({
     options: z
       .array(
@@ -29,7 +29,7 @@ const MultipleChoiceSchema = BaseQuestionSchema.extend({
 });
 
 const TextQuestionSchema = BaseQuestionSchema.extend({
-  type: z.literal(EQuestionType.TEXT),
+  type: z.literal(EFormQuestionType.TEXT),
   config: z.object({
     subtype: z.enum(["short", "long", "email", "number", "phone"]),
     placeholder: z.string().optional(),
@@ -45,7 +45,7 @@ const TextQuestionSchema = BaseQuestionSchema.extend({
 });
 
 const RatingQuestionSchema = BaseQuestionSchema.extend({
-  type: z.literal(EQuestionType.RATING),
+  type: z.literal(EFormQuestionType.RATING),
   config: z.object({
     style: z.enum(["stars", "numbers", "smileys", "hearts"]),
     scale: z.number().min(2).max(10).default(5),
@@ -61,7 +61,7 @@ const RatingQuestionSchema = BaseQuestionSchema.extend({
 
 // Opinion scale question
 const OpinionScaleSchema = BaseQuestionSchema.extend({
-  type: z.literal(EQuestionType.OPINION_SCALE),
+  type: z.literal(EFormQuestionType.OPINION_SCALE),
   config: z.object({
     steps: z.number().min(3).max(11).default(5),
     start_at_one: z.boolean().default(false),
@@ -77,7 +77,7 @@ const OpinionScaleSchema = BaseQuestionSchema.extend({
 
 // Yes/No question
 const YesNoSchema = BaseQuestionSchema.extend({
-  type: z.literal(EQuestionType.YES_NO),
+  type: z.literal(EFormQuestionType.YES_NO),
   config: z.object({
     labels: z
       .object({
@@ -90,7 +90,7 @@ const YesNoSchema = BaseQuestionSchema.extend({
 
 // Dropdown question
 const DropdownSchema = BaseQuestionSchema.extend({
-  type: z.literal(EQuestionType.DROPDOWN),
+  type: z.literal(EFormQuestionType.DROPDOWN),
   config: z.object({
     options: z
       .array(
@@ -108,7 +108,7 @@ const DropdownSchema = BaseQuestionSchema.extend({
 
 // File upload question
 const FileUploadSchema = BaseQuestionSchema.extend({
-  type: z.literal(EQuestionType.FILE_UPLOAD),
+  type: z.literal(EFormQuestionType.FILE_UPLOAD),
   config: z.object({
     allowed_types: z
       .array(
@@ -132,7 +132,7 @@ const FileUploadSchema = BaseQuestionSchema.extend({
 
 // Date question
 const DateQuestionSchema = BaseQuestionSchema.extend({
-  type: z.literal(EQuestionType.DATE),
+  type: z.literal(EFormQuestionType.DATE),
   config: z.object({
     format: z.enum(["date", "datetime", "time"]).default("date"),
     min_date: z.string().datetime().optional(),
@@ -144,7 +144,7 @@ const DateQuestionSchema = BaseQuestionSchema.extend({
 
 // Matrix question (rating grid)
 const MatrixQuestionSchema = BaseQuestionSchema.extend({
-  type: z.literal(EQuestionType.MATRIX),
+  type: z.literal(EFormQuestionType.MATRIX),
   config: z.object({
     rows: z
       .array(
@@ -169,7 +169,7 @@ const MatrixQuestionSchema = BaseQuestionSchema.extend({
 
 // Ranking question
 const RankingQuestionSchema = BaseQuestionSchema.extend({
-  type: z.literal(EQuestionType.RANKING),
+  type: z.literal(EFormQuestionType.RANKING),
   config: z.object({
     options: z
       .array(
@@ -186,7 +186,7 @@ const RankingQuestionSchema = BaseQuestionSchema.extend({
 
 // Picture choice question
 const PictureChoiceSchema = BaseQuestionSchema.extend({
-  type: z.literal(EQuestionType.PICTURE_CHOICE),
+  type: z.literal(EFormQuestionType.PICTURE_CHOICE),
   config: z.object({
     options: z
       .array(
