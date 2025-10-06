@@ -19,7 +19,6 @@ export function MultiSelectQuestion({
   onNext,
   questionNumber = 1,
 }: MultiSelectQuestionProps) {
-  console.log(question);
   const [focusIndex, setFocusIndex] = useState(0);
 
   const toggleOption = (id: string) => {

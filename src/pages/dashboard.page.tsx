@@ -11,7 +11,7 @@ export const DashboardPage = () => {
       const response = await authService.getProfile();
       authManager.setUser(response.data);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
   useEffect(() => {

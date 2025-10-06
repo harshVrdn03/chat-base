@@ -204,11 +204,11 @@ export default function ChatBotAppearanceEditor() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {fieldGroups.map((group, index) => {
         const Icon = group.icon;
         return (
-          <Card key={index}>
+          <Card className="shadow-none" key={index}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Icon className="h-5 w-5" />
@@ -217,7 +217,7 @@ export default function ChatBotAppearanceEditor() {
               <CardDescription>{group.description}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {group.fields.map((field) => (
                   <div
                     key={field.key}

@@ -58,8 +58,6 @@ export default function ChatBotKnowledge() {
     name: "knowledge",
   });
 
-  console.log(knowledgeValue, "knowledgeValue");
-
   const handleFileInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return;
     const newFiles = Array.from(event.target.files).map((file) => file.name);

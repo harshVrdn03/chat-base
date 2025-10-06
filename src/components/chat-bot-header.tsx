@@ -8,6 +8,7 @@ import {
   useParams,
   matchPath,
 } from "react-router-dom";
+import { ChatBotEvents, emitter } from "@/events";
 
 const UrlForHeaderChatBot = {
   INDEX_CHAT_BOT: "/chat-bot",
@@ -34,8 +35,6 @@ export function ChatBotHeader() {
     </header>
   );
 }
-
-
 
 const RightHeader = () => {
   const navigate = useNavigate();
@@ -64,7 +63,7 @@ const RightHeader = () => {
         </Button>
         <Button
           variant="default"
-          onClick={() => console.log("Save New Chat Bot")}
+          onClick={() => emitter.emit(ChatBotEvents.CHATBOT_CREATE)}
         >
           Create
         </Button>
@@ -81,7 +80,7 @@ const RightHeader = () => {
         </Button>
         <Button
           variant="default"
-          onClick={() => console.log(`Save Chat Bot ${params.chatBotId}`)}
+          onClick={() => emitter.emit(ChatBotEvents.CHATBOT_UPDATE)}
         >
           Save
         </Button>
