@@ -1,5 +1,11 @@
 import { AppLayout } from "@/layouts";
-import { HomePage, LoginPage, OnBoardingPage, RegisterPage } from "@/pages";
+import {
+  AuthCallbackPage,
+  HomePage,
+  LoginPage,
+  OnBoardingPage,
+  RegisterPage,
+} from "@/pages";
 import { createBrowserRouter } from "react-router-dom";
 import { dashboardRoutes } from "./dashboard.routes";
 import { builderRoutes } from "./builder.routes";
@@ -26,6 +32,10 @@ export const appRoutes = createBrowserRouter([
   {
     path: "/login",
     element: <LoginPage />,
+  },
+  {
+    path: "/auth/callback",
+    element: <AuthCallbackPage />,
   },
   {
     path: "/register",

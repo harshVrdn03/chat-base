@@ -3,9 +3,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { Outlet } from "react-router-dom";
 
-interface DashboardLayoutProps {}
-
-const DashboardLayout = ({}: DashboardLayoutProps) => {
+const DashboardLayout = () => {
   return (
     <SidebarProvider
       style={

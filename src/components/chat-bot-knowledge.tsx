@@ -7,49 +7,43 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { CheckCircle2, Globe, UploadCloud, FileText } from "lucide-react";
+import {
+  CheckCircle2,
+  Globe,
+  UploadCloud,
+  FileText,
+  Upload,
+} from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Lightbulb } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Textarea } from "./ui/textarea";
-
-type KnowledgeSource = "url" | "document" | "manual";
-
-const defaultQuestions = [
-  "What problem does this chatbot solve?",
-  "What tone of voice should it use?",
-  "How should it reply if it cannot find an answer?",
-];
+import { KnowledgeType } from "@/enums";
+import type { ChatBotFormData } from "@/validations";
+import { Controller, useFormContext, useWatch } from "react-hook-form";
 const knowledgeOptions: Array<{
-  id: KnowledgeSource;
+  id: KnowledgeType;
   label: string;
   description: string;
   icon: React.ComponentType<{ className?: string }>;
 }> = [
   {
-    id: "url",
+    id: KnowledgeType.URL,
     label: "Public URL",
     description: "Let the bot crawl a URL or sitemap to gather knowledge.",
     icon: Globe,
   },
   {
-    id: "document",
+    id: KnowledgeType.FILES,
     label: "PDF / DOCX",
     description: "Upload files to build a private, searchable knowledge base.",
     icon: UploadCloud,
   },
   {
-    id: "manual",
+    id: KnowledgeType.MANUAL,
     label: "Manual Notes",
     description:
       "Provide custom instructions and FAQs directly in the dashboard.",
@@ -57,31 +51,24 @@ const knowledgeOptions: Array<{
   },
 ];
 export default function ChatBotKnowledge() {
-  const [knowledgeSource, setKnowledgeSource] =
-    React.useState<KnowledgeSource>("url");
-  const [knowledgeConfig, setKnowledgeConfig] = React.useState({
-    url: "",
-    crawlDepth: 2,
-    refresh: "weekly",
-    documents: [] as string[],
-    manual: "",
+  const { control, setValue } = useFormContext<ChatBotFormData>();
+
+  const knowledgeValue = useWatch({
+    control,
+    name: "knowledge",
   });
-  const handleKnowledgeConfig = (
-    field: "url" | "crawlDepth" | "refresh" | "manual" | "documents",
-    value: string | number | string[]
-  ) => {
-    setKnowledgeConfig((prev) => ({ ...prev, [field]: value }));
-  };
+
+  console.log(knowledgeValue, "knowledgeValue");
+
   const handleFileInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return;
-    const files = Array.from(event.target.files).map((file) => file.name);
-    setKnowledgeConfig((prev) => ({
-      ...prev,
-      documents: [...new Set([...prev.documents, ...files])],
-    }));
+    const newFiles = Array.from(event.target.files).map((file) => file.name);
+    const prev = knowledgeValue.files || [];
+    setValue("knowledge.files", [...new Set([...prev, ...newFiles])]);
   };
+
   const resetDocuments = () => {
-    setKnowledgeConfig((prev) => ({ ...prev, documents: [] }));
+    setValue("knowledge.files", []);
   };
   return (
     <section className="space-y-6">
@@ -96,45 +83,55 @@ export default function ChatBotKnowledge() {
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {knowledgeOptions.map((option) => {
               const Icon = option.icon;
-              const selected = knowledgeSource === option.id;
+              const selected = knowledgeValue.type === option.id;
               return (
-                <Card
+                <Controller
                   key={option.id}
-                  className={cn(
-                    "cursor-pointer transition-all duration-200 hover:border-primary/50 shadow-none",
-                    selected && "border-primary ring-2 ring-primary/20"
-                  )}
-                  onClick={() => setKnowledgeSource(option.id)}
-                >
-                  <CardContent className="p-4">
-                    <div className="flex items-start gap-3">
-                      <div
-                        className={cn(
-                          "flex h-10 w-10 items-center justify-center rounded-lg",
-                          selected ? "bg-primary/10" : "bg-muted"
-                        )}
-                      >
-                        <Icon
-                          className={cn(
-                            "h-5 w-5",
-                            selected ? "text-primary" : "text-muted-foreground"
-                          )}
-                        />
-                      </div>
-                      <div className="space-y-1 flex-1">
-                        <p className="text-sm font-semibold text-foreground">
-                          {option.label}
-                        </p>
-                        <p className="text-xs leading-relaxed text-muted-foreground">
-                          {option.description}
-                        </p>
-                      </div>
-                      {selected && (
-                        <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0" />
+                  name="knowledge.type"
+                  control={control}
+                  render={({ field }) => (
+                    <Card
+                      className={cn(
+                        "cursor-pointer transition-all duration-200 hover:border-primary/50 shadow-none",
+                        selected && "border-primary ring-2 ring-primary/20"
                       )}
-                    </div>
-                  </CardContent>
-                </Card>
+                      onClick={() => {
+                        field.onChange(option.id);
+                      }}
+                    >
+                      <CardContent className="p-4">
+                        <div className="flex items-start gap-3">
+                          <div
+                            className={cn(
+                              "flex h-10 w-10 items-center justify-center rounded-lg",
+                              selected ? "bg-primary/10" : "bg-muted"
+                            )}
+                          >
+                            <Icon
+                              className={cn(
+                                "h-5 w-5",
+                                selected
+                                  ? "text-primary"
+                                  : "text-muted-foreground"
+                              )}
+                            />
+                          </div>
+                          <div className="space-y-1 flex-1">
+                            <p className="text-sm font-semibold text-foreground">
+                              {option.label}
+                            </p>
+                            <p className="text-xs leading-relaxed text-muted-foreground">
+                              {option.description}
+                            </p>
+                          </div>
+                          {selected && (
+                            <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0" />
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+                />
               );
             })}
           </div>
@@ -143,7 +140,7 @@ export default function ChatBotKnowledge() {
 
       {/* Dynamic Configuration Based on Selection */}
       <div className="space-y-4">
-        {knowledgeSource === "url" && (
+        {knowledgeValue.type === KnowledgeType.URL && (
           <Card className="shadow-none">
             <CardHeader className="pb-4">
               <CardTitle className="text-lg">Website Configuration</CardTitle>
@@ -158,65 +155,13 @@ export default function ChatBotKnowledge() {
                 </Label>
                 <Input
                   id="knowledge-url"
-                  value={knowledgeConfig.url}
+                  value={knowledgeValue.url}
                   onChange={(event) =>
-                    handleKnowledgeConfig("url", event.target.value)
+                    setValue("knowledge.url", event.target.value)
                   }
                   placeholder="https://docs.youware.com"
                   className="h-11"
                 />
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-3">
-                  <Label htmlFor="crawl-depth" className="text-sm font-medium">
-                    Crawl depth: {knowledgeConfig.crawlDepth}
-                  </Label>
-                  <div className="space-y-2">
-                    <input
-                      id="crawl-depth"
-                      type="range"
-                      min={1}
-                      max={5}
-                      value={knowledgeConfig.crawlDepth}
-                      onChange={(event) =>
-                        handleKnowledgeConfig(
-                          "crawlDepth",
-                          Number(event.target.value)
-                        )
-                      }
-                      className="w-full accent-primary"
-                    />
-                    <div className="flex justify-between text-xs text-muted-foreground">
-                      <span>Shallow</span>
-                      <span>Deep</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <Label
-                    htmlFor="refresh-schedule"
-                    className="text-sm font-medium"
-                  >
-                    Refresh schedule
-                  </Label>
-                  <Select
-                    value={knowledgeConfig.refresh}
-                    onValueChange={(value) =>
-                      handleKnowledgeConfig("refresh", value)
-                    }
-                  >
-                    <SelectTrigger className="h-11">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="daily">Every day</SelectItem>
-                      <SelectItem value="weekly">Every week</SelectItem>
-                      <SelectItem value="monthly">Every month</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
               </div>
 
               <Alert className="bg-primary/5 border-primary/20">
@@ -230,16 +175,39 @@ export default function ChatBotKnowledge() {
           </Card>
         )}
 
-        {knowledgeSource === "document" && (
+        {knowledgeValue.type === KnowledgeType.FILES && (
           <Card>
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg">Document Upload</CardTitle>
-              <CardDescription>
-                Upload PDF and DOCX files (up to 25 MB each)
-              </CardDescription>
+            <CardHeader className="flex flex-row items-center justify-between pb-4">
+              <div>
+                <CardTitle className="text-lg">Document Upload</CardTitle>
+                <CardDescription>
+                  Upload PDF and DOCX files (up to 25 MB each)
+                </CardDescription>
+              </div>
+
+              {Array.isArray(knowledgeValue.files) &&
+                knowledgeValue.files.length > 0 && (
+                  <Button
+                    type="button"
+                    size="icon"
+                    onClick={() =>
+                      document.getElementById("knowledge-documents")?.click()
+                    }
+                  >
+                    <Upload />
+                  </Button>
+                )}
             </CardHeader>
+
             <CardContent className="space-y-4">
               <div
+                style={{
+                  display:
+                    Array.isArray(knowledgeValue.files) &&
+                    knowledgeValue.files.length > 0
+                      ? "none"
+                      : "",
+                }}
                 className={cn(
                   "flex flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed p-8 text-center transition-colors",
                   "border-muted bg-muted/20 hover:border-primary/50 hover:bg-primary/5 cursor-pointer"
@@ -270,43 +238,44 @@ export default function ChatBotKnowledge() {
                 />
               </div>
 
-              {knowledgeConfig.documents.length > 0 && (
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-sm font-medium">
-                      Attached files
-                    </Label>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={resetDocuments}
-                      className="text-destructive hover:text-destructive/90"
-                    >
-                      Clear all
-                    </Button>
-                  </div>
-                  <div className="space-y-2">
-                    {knowledgeConfig.documents.map((file, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between rounded-lg border bg-background p-3"
+              {Array.isArray(knowledgeValue.files) &&
+                knowledgeValue.files.length > 0 && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-sm font-medium">
+                        Attached files
+                      </Label>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={resetDocuments}
+                        className="text-destructive hover:text-destructive/90"
                       >
-                        <div className="flex items-center gap-3">
-                          <FileText className="h-4 w-4 text-primary" />
-                          <span className="text-sm font-medium">{file}</span>
+                        Clear all
+                      </Button>
+                    </div>
+                    <div className="space-y-2">
+                      {knowledgeValue.files.map((file, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center justify-between rounded-lg border bg-background p-3"
+                        >
+                          <div className="flex items-center gap-3">
+                            <FileText className="h-4 w-4 text-primary" />
+                            <span className="text-sm font-medium">{file}</span>
+                          </div>
+                          <Badge variant="secondary">Ready</Badge>
                         </div>
-                        <Badge variant="secondary">Ready</Badge>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
             </CardContent>
           </Card>
         )}
 
-        {knowledgeSource === "manual" && (
+        {knowledgeValue.type === KnowledgeType.MANUAL && (
           <Card>
             <CardHeader className="pb-4">
               <CardTitle className="text-lg">Manual Knowledge Base</CardTitle>
@@ -325,11 +294,11 @@ export default function ChatBotKnowledge() {
                 <Textarea
                   id="manual-knowledge"
                   rows={12}
-                  value={knowledgeConfig.manual}
+                  value={knowledgeValue.manual}
                   onChange={(event) =>
-                    handleKnowledgeConfig("manual", event.target.value)
+                    setValue("knowledge.manual", event.target.value)
                   }
-                  placeholder={defaultQuestions.join("\n\n")}
+                  placeholder={"Please provide your knowledge here"}
                   className="resize-none font-mono text-sm"
                 />
                 <p className="text-xs text-muted-foreground">

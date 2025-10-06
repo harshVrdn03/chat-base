@@ -1,7 +1,6 @@
 import { Outlet } from "react-router-dom";
 
-interface AppLayoutProps {}
-const AppLayout = ({}: AppLayoutProps) => {
+const AppLayout = () => {
   return (
     <div>
       <Outlet />

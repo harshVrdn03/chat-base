@@ -30,6 +30,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { useAuthStore } from "@/stores";
 
 const data = {
   user: {
@@ -149,6 +150,8 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const authUser = useAuthStore((state) => state.user);
+  console.log(authUser);
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -172,7 +175,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser
+          user={{
+            avatar: authUser?.profilePicture || "",
+            name: authUser?.firstName || "",
+            email: authUser?.email || "",
+          }}
+        />
       </SidebarFooter>
     </Sidebar>
   );

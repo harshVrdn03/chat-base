@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Card,
   CardContent,
@@ -7,271 +8,384 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useState } from "react";
-import { Eye } from "lucide-react";
-import { Badge } from "./ui/badge";
-type AvatarStyle = "bubble" | "minimal" | "floating";
-type WidgetPosition = "bottom-right" | "bottom-left" | "inline";
-type TypefaceOption = "Inter" | "Sohne" | "Grotesk";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Check,
+  ChevronsUpDown,
+  Palette,
+  Type,
+  Image,
+  Layout,
+  Settings,
+} from "lucide-react";
+import { Checkbox } from "./ui/checkbox";
 
-const avatarStyles = [
-  { value: "bubble", label: "Bubble" },
-  { value: "minimal", label: "Minimal" },
-  { value: "floating", label: "Floating" },
-];
+interface AppearanceState {
+  brandColor: string;
+  contrastColor: string;
+  backgroundColor: string;
+  messageColor: string;
+  userMessageColor: string;
+  typeface: string;
+  fontSize: number;
+  fontWeight: string;
+  avatarStyle: string;
+  avatarUrl: string;
+  showAvatar: boolean;
+  roundedCorners: boolean;
+  borderWidth: number;
+  borderColor: string;
+  widgetPosition: string;
+  showLauncher: boolean;
+  launcherLabel: string;
+  launcherSize: number;
+  messageAlignment: string;
+  showTimestamps: boolean;
+  animationStyle: string;
+  shadowIntensity: number;
+  opacity: number;
+  customCSS: string;
+}
 
-const widgetPositions = [
-  { value: "bottom-right", label: "Bottom Right" },
-  { value: "bottom-left", label: "Bottom Left" },
-  { value: "inline", label: "Inline" },
-];
+export default function ChatBotAppearanceEditor() {
+  const [appearance, setAppearance] = useState<AppearanceState>({
+    brandColor: "#3b5d50",
+    contrastColor: "#fefefe",
+    backgroundColor: "#ffffff",
+    messageColor: "#f1f5f9",
+    userMessageColor: "#3b5d50",
+    typeface: "Inter",
+    fontSize: 14,
+    fontWeight: "normal",
+    avatarStyle: "bubble",
+    avatarUrl: "",
+    showAvatar: true,
+    roundedCorners: true,
+    borderWidth: 1,
+    borderColor: "#e2e8f0",
+    widgetPosition: "bottom-right",
+    showLauncher: true,
+    launcherLabel: "Need product guidance?",
+    launcherSize: 56,
+    messageAlignment: "left",
+    showTimestamps: true,
+    animationStyle: "slide",
+    shadowIntensity: 20,
+    opacity: 100,
+    customCSS: "",
+  });
 
-const typefaces = [
-  { value: "Inter", label: "Inter" },
-  { value: "Sohne", label: "Sohne" },
-  { value: "Grotesk", label: "Grotesk" },
-];
+  const updateAppearance = (key: keyof AppearanceState, value: any) => {
+    setAppearance((prev) => ({ ...prev, [key]: value }));
+  };
 
-export default function ChatBotBuilderAppearance() {
-  const [botName] = useState("AI");
-  const [brandColor, setBrandColor] = useState("#3b5d50");
-  const [contrastColor, setContrastColor] = useState("#fefefe");
-  const [launcherLabel, setLauncherLabel] = useState("Need product guidance?");
-  const [avatarStyle, setAvatarStyle] = useState<AvatarStyle>("bubble");
-  const [widgetPosition, setWidgetPosition] =
-    useState<WidgetPosition>("bottom-right");
-  const [typeface, setTypeface] = useState<TypefaceOption>("Inter");
-  const [suggestedQuestions] = useState<string[]>([
-    "What can you do?",
-    "Show me quick tips",
-  ]);
-  const [welcomeEnabled] = useState(true);
-  const [welcomeMessage] = useState(
-    "Hi there! I'm your new assistant. Ask me anything."
-  );
+  const fieldGroups = [
+    {
+      title: "Colors",
+      description: "Define your chatbot's color palette",
+      icon: Palette,
+      fields: [
+        { key: "brandColor", label: "Brand Color", type: "color" },
+        { key: "contrastColor", label: "Contrast Color", type: "color" },
+        { key: "backgroundColor", label: "Background Color", type: "color" },
+        { key: "messageColor", label: "Message Color", type: "color" },
+        { key: "userMessageColor", label: "User Message Color", type: "color" },
+      ],
+    },
+    {
+      title: "Typography",
+      description: "Customize text appearance and style",
+      icon: Type,
+      fields: [
+        {
+          key: "typeface",
+          label: "Typeface",
+          type: "select",
+          options: [
+            "Inter",
+            "Arial",
+            "Helvetica",
+            "Roboto",
+            "Open Sans",
+            "Lato",
+          ],
+        },
+        {
+          key: "fontWeight",
+          label: "Font Weight",
+          type: "select",
+          options: ["light", "normal", "medium", "semibold", "bold"],
+        },
+        {
+          key: "fontSize",
+          label: "Font Size",
+          type: "slider",
+          min: 12,
+          max: 20,
+          step: 1,
+        },
+      ],
+    },
+    {
+      title: "Avatar & Style",
+      description: "Customize avatar display and style",
+      icon: Image,
+      fields: [
+        {
+          key: "showAvatar",
+          label: "Show Avatar",
+          type: "switch",
+        },
+        {
+          key: "avatarStyle",
+          label: "Avatar Style",
+          type: "select",
+          options: ["bubble", "square", "rounded"],
+        },
+        {
+          key: "avatarUrl",
+          label: "Avatar URL",
+          type: "text",
+        },
+      ],
+    },
+    {
+      title: "Widget",
+      description: "Configure widget position and launcher",
+      icon: Layout,
+      fields: [
+        {
+          key: "showLauncher",
+          label: "Show Launcher",
+          type: "switch",
+        },
+        {
+          key: "widgetPosition",
+          label: "Widget Position",
+          type: "select",
+          options: ["bottom-right", "bottom-left", "top-right", "top-left"],
+        },
+        {
+          key: "launcherSize",
+          label: "Launcher Size",
+          type: "slider",
+          min: 40,
+          max: 80,
+          step: 4,
+        },
+      ],
+    },
+    {
+      title: "Advanced",
+      description: "Fine-tune visual effects and styling",
+      icon: Settings,
+      fields: [
+        {
+          key: "roundedCorners",
+          label: "Rounded Corners",
+          type: "switch",
+        },
+        {
+          key: "borderWidth",
+          label: "Border Width",
+          type: "slider",
+          min: 0,
+          max: 5,
+          step: 1,
+        },
+        {
+          key: "shadowIntensity",
+          label: "Shadow Intensity",
+          type: "slider",
+          min: 0,
+          max: 50,
+          step: 5,
+        },
+        {
+          key: "customCSS",
+          label: "Custom CSS",
+          type: "textarea",
+        },
+      ],
+    },
+  ];
 
-  return (
-    <section className="grid gap-6 lg:grid-cols-[1fr_400px]">
-      <div className="space-y-6">
-        <Card className="shadow-sm">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-lg">Visual Identity</CardTitle>
-            <CardDescription>
-              Customize colors, typography, and widget appearance
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-3">
-                <Label htmlFor="brand-color" className="text-sm font-medium">
-                  Brand color
-                </Label>
-                <div className="flex items-center gap-3">
-                  <input
-                    id="brand-color"
-                    type="color"
-                    value={brandColor}
-                    onChange={(event) => setBrandColor(event.target.value)}
-                    className="h-10 w-10 cursor-pointer rounded-lg border border-border"
-                  />
-                  <Input
-                    value={brandColor}
-                    onChange={(event) => setBrandColor(event.target.value)}
-                    className="flex-1"
-                  />
-                </div>
-              </div>
+  const renderField = (field: any) => {
+    const value = appearance[field.key as keyof AppearanceState];
 
-              <div className="space-y-3">
-                <Label htmlFor="contrast-color" className="text-sm font-medium">
-                  Text color
-                </Label>
-                <div className="flex items-center gap-3">
-                  <input
-                    id="contrast-color"
-                    type="color"
-                    value={contrastColor}
-                    onChange={(event) => setContrastColor(event.target.value)}
-                    className="h-10 w-10 cursor-pointer rounded-lg border border-border"
-                  />
-                  <Input
-                    value={contrastColor}
-                    onChange={(event) => setContrastColor(event.target.value)}
-                    className="flex-1"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <Label htmlFor="launcher-label" className="text-sm font-medium">
-                Launcher label
-              </Label>
+    switch (field.type) {
+      case "color":
+        return (
+          <div className="space-y-2">
+            <Label>{field.label}</Label>
+            <div className="flex gap-2">
               <Input
-                id="launcher-label"
-                value={launcherLabel}
-                onChange={(event) => setLauncherLabel(event.target.value)}
-                placeholder="Need help?"
+                type="color"
+                value={value as string}
+                onChange={(e) => updateAppearance(field.key, e.target.value)}
+                className="w-16 h-10 cursor-pointer"
+              />
+              <Input
+                type="text"
+                value={value as string}
+                onChange={(e) => updateAppearance(field.key, e.target.value)}
+                className="flex-1"
               />
             </div>
+          </div>
+        );
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-3">
-                <Label className="text-sm font-medium">Avatar style</Label>
-                <RadioGroup
-                  value={avatarStyle}
-                  onValueChange={(value) =>
-                    setAvatarStyle(value as AvatarStyle)
-                  }
-                  className="space-y-2"
-                >
-                  {avatarStyles.map((style) => (
-                    <div
-                      key={style.value}
-                      className="flex items-center space-x-2"
+      case "slider":
+        return (
+          <div className="space-y-2">
+            <Label>
+              {field.label}: {value}
+              {field.unit || ""}
+            </Label>
+            <Slider
+              value={[value as number]}
+              min={field.min}
+              max={field.max}
+              step={field.step}
+              onValueChange={(val) => updateAppearance(field.key, val[0])}
+            />
+          </div>
+        );
+
+      case "switch":
+        return (
+          <div className="flex items-center justify-between">
+            <Label htmlFor={field.key}>{field.label}</Label>
+            {/* <Checkbox
+              id={field.key}
+              checked={value as boolean}
+              onCheckedChange={(checked) =>
+                updateAppearance(field.key, checked)
+              }
+            /> */}
+          </div>
+        );
+
+      case "textarea":
+        return (
+          <div className="space-y-2">
+            <Label>{field.label}</Label>
+            <textarea
+              className="w-full min-h-[80px] p-2 border rounded-md text-sm"
+              value={value as string}
+              onChange={(e) => updateAppearance(field.key, e.target.value)}
+            />
+          </div>
+        );
+
+      case "text":
+      default:
+        return (
+          <div className="space-y-2">
+            <Label>{field.label}</Label>
+            <Input
+              type="text"
+              value={value as string}
+              onChange={(e) => updateAppearance(field.key, e.target.value)}
+            />
+          </div>
+        );
+    }
+  };
+
+  const CommandSelect = ({ field }: { field: any }) => {
+    const [open, setOpen] = useState(false);
+    const value = appearance[field.key as keyof AppearanceState];
+
+    return (
+      <div className="space-y-2">
+        <Label>{field.label}</Label>
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button variant="outline" className="w-full justify-between">
+              {value}
+              <ChevronsUpDown className="h-4 w-4 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-full p-0">
+            <Command>
+              <CommandInput placeholder={`Search ${field.label}...`} />
+              <CommandList>
+                <CommandEmpty>No option found.</CommandEmpty>
+                <CommandGroup>
+                  {field.options.map((option: string) => (
+                    <CommandItem
+                      key={option}
+                      value={option}
+                      onSelect={() => {
+                        updateAppearance(field.key, option);
+                        setOpen(false);
+                      }}
                     >
-                      <RadioGroupItem value={style.value} id={style.value} />
-                      <Label
-                        htmlFor={style.value}
-                        className="text-sm font-normal"
-                      >
-                        {style.label}
-                      </Label>
-                    </div>
+                      <Check
+                        className={`mr-2 h-4 w-4 ${
+                          value === option ? "opacity-100" : "opacity-0"
+                        }`}
+                      />
+                      {option}
+                    </CommandItem>
                   ))}
-                </RadioGroup>
-              </div>
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+      </div>
+    );
+  };
 
-              <div className="space-y-3">
-                <Label className="text-sm font-medium">Typography</Label>
-                <Select
-                  value={typeface}
-                  onValueChange={(value) =>
-                    setTypeface(value as TypefaceOption)
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {typefaces.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <p className="text-xs text-muted-foreground">
-                  {typefaces.find((t) => t.value === typeface)?.value}
-                </p>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <Label className="text-sm font-medium">Widget position</Label>
-              <div className="grid grid-cols-3 gap-2">
-                {widgetPositions.map((position) => (
-                  <Button
-                    key={position.value}
-                    type="button"
-                    variant={
-                      widgetPosition === position.value ? "default" : "outline"
-                    }
-                    size="sm"
-                    onClick={() =>
-                      setWidgetPosition(position.value as WidgetPosition)
-                    }
-                    className="h-11"
+  return (
+    <div className="space-y-6">
+      {fieldGroups.map((group, index) => {
+        const Icon = group.icon;
+        return (
+          <Card key={index}>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Icon className="h-5 w-5" />
+                {group.title}
+              </CardTitle>
+              <CardDescription>{group.description}</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {group.fields.map((field) => (
+                  <div
+                    key={field.key}
+                    className={field.type === "textarea" ? "col-span-2" : ""}
                   >
-                    {position.label}
-                  </Button>
+                    {field.type === "select" ? (
+                      <CommandSelect field={field} />
+                    ) : (
+                      renderField(field)
+                    )}
+                  </div>
                 ))}
               </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Card className="shadow-none">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Eye className="h-5 w-5 text-primary" />
-            Live Preview
-          </CardTitle>
-          <CardDescription>
-            See how your chatbot will look to users
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div
-            className="space-y-4 rounded-2xl bg-white p-6 shadow-xl border"
-            style={{ fontFamily: typeface }}
-          >
-            {/* Chat Header */}
-            <div className="flex items-center gap-3">
-              <div
-                className="flex h-12 w-12 items-center justify-center rounded-2xl text-base font-bold shadow-sm"
-                style={{
-                  background: brandColor,
-                  color: contrastColor,
-                }}
-              >
-                {botName ? botName.charAt(0).toUpperCase() : "AI"}
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-gray-900">
-                  {botName || "New Assistant"}
-                </p>
-                <p className="text-xs text-gray-500">
-                  {launcherLabel || "Chat with us"}
-                </p>
-              </div>
-            </div>
-
-            {/* Welcome Message */}
-            {welcomeEnabled && (
-              <div
-                className="rounded-2xl px-4 py-3 text-sm text-gray-700 shadow-sm border"
-                style={{
-                  borderColor: brandColor + "20",
-                  background: brandColor + "08",
-                }}
-              >
-                {welcomeMessage || "Hello! How can I help you today?"}
-              </div>
-            )}
-
-            {/* Suggested Questions */}
-            <div className="space-y-2">
-              {suggestedQuestions.slice(0, 3).map((question, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  className="w-full rounded-xl border border-gray-200 px-3 py-2 text-left text-xs text-gray-600 transition-all hover:border-gray-300 hover:shadow-sm"
-                >
-                  {question || "Sample question " + (index + 1)}
-                </button>
-              ))}
-            </div>
-
-            {/* Position Indicator */}
-            <div className="flex justify-center pt-4">
-              <Badge variant="secondary" className="text-xs">
-                Position: {widgetPosition.replace("-", " ")}
-              </Badge>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </section>
+            </CardContent>
+          </Card>
+        );
+      })}
+    </div>
   );
 }

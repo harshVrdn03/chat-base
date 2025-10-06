@@ -1,14 +1,18 @@
-import { DashboardLayout } from "@/layouts";
-import { HomePage } from "@/pages";
+import { DashboardLayout, ProtectedLayout } from "@/layouts";
+import { DashboardPage } from "@/pages";
 import { type RouteObject } from "react-router-dom";
 
 export const dashboardRoutes: RouteObject[] = [
   {
     path: "/dashboard",
-    element: <DashboardLayout />,
+    element: (
+      <ProtectedLayout>
+        <DashboardLayout />
+      </ProtectedLayout>
+    ),
     children: [
       {
-        element: <HomePage />,
+        element: <DashboardPage />,
         index: true,
       },
     ],

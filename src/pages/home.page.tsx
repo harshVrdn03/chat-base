@@ -5,6 +5,13 @@ const HomePage = () => {
   const navigate = useNavigate();
   return (
     <div>
+      <button
+        onClick={() => {
+          window.location.href = "http://localhost:3000/api/auth/google";
+        }}
+      >
+        Login with Google
+      </button>
       <Button onClick={() => navigate("/dashboard")}>GO TO DASHBOARD</Button>
     </div>
   );

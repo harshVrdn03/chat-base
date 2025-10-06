@@ -12,14 +12,14 @@ import type {
   RequestConfig,
   HttpMethod,
 } from "../types";
-import { Log, tokenManager } from "../utils";
+import { Log, LocalStorageUtils } from "../utils";
 
 class ApiService {
   private instance: AxiosInstance;
 
   constructor() {
     this.instance = axios.create({
-      baseURL: "https://jsonplaceholder.typicode.com",
+      baseURL: "http://localhost:3000/api",
       timeout: 10000,
       headers: {
         "Content-Type": "application/json",
@@ -52,7 +52,7 @@ class ApiService {
   private handleRequest(
     config: InternalAxiosRequestConfig
   ): InternalAxiosRequestConfig {
-    const token = tokenManager.getToken();
+    const token = LocalStorageUtils.getItem("token");
     if (token && this.requiresAuth(config)) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -100,7 +100,7 @@ class ApiService {
   }
 
   private handleUnauthorized(): void {
-    tokenManager.clearTokens();
+    LocalStorageUtils.removeItem("token");
     window.location.href = "/login";
   }
 

@@ -3,6 +3,7 @@ import {
   ChatBotLayout,
   ChatBotUserResponsesLayout,
   ChatBotUsersLayout,
+  ProtectedLayout,
 } from "@/layouts";
 import {
   ChatBotPage,
@@ -15,7 +16,11 @@ import { Navigate, type RouteObject } from "react-router-dom";
 export const chatBotRoutes: RouteObject[] = [
   {
     path: "/chat-bot",
-    element: <ChatBotLayout />,
+    element: (
+      <ProtectedLayout>
+        <ChatBotLayout />
+      </ProtectedLayout>
+    ),
     children: [
       {
         element: <ChatBotPage />,

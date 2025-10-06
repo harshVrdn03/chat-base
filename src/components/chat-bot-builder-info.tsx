@@ -8,6 +8,7 @@ const BuilderBadgesMap = {
   draft: "In review",
   idea: "Draft",
 };
+
 export default function ChatBotBuilderInfo() {
   return (
     <div className="flex flex-col gap-4 border-b bg-muted/40 p-6">
@@ -20,7 +21,7 @@ export default function ChatBotBuilderInfo() {
             Create your first chatbot
           </CardTitle>
         </div>
-        <CardDescription className="text-base leading-relaxed text-muted-foreground">
+        <CardDescription className="text-xs leading-relaxed text-muted-foreground">
           Define how your assistant looks, feels, and answers. Everything is
           captured in structured steps so you can iterate quickly.
         </CardDescription>

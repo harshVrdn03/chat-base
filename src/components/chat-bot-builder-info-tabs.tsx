@@ -4,7 +4,7 @@ import ChatBotBuilderOverview from "./chat-bot-builder-overview";
 import ChatBotKnowledge from "./chat-bot-knowledge";
 import ChatBotBuilderCustomization from "./chat-bot-builder-customization";
 import ChatBotBuilderAppearance from "./chat-bot-builder-appearance";
-import { StyledTabPanel, StyledTabs } from "./common";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
 const tabs = [
   { id: "overview", label: "Overview", icon: Settings },
@@ -24,8 +24,18 @@ export default function ChatBotBuilderInfoTabs() {
   };
 
   return (
-    <StyledTabs value={activeTab} onChange={setActiveTab} tabs={tabs}>
-      <StyledTabPanel>{tabsMaps[activeTab]}</StyledTabPanel>
-    </StyledTabs>
+    <div className="p-3 h-full">
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList>
+          {tabs.map((tab) => (
+            <TabsTrigger key={tab.id} value={tab.id}>
+              <tab.icon className="h-4 w-4" />
+              {tab.label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        <TabsContent value={activeTab}>{tabsMaps[activeTab]}</TabsContent>
+      </Tabs>
+    </div>
   );
 }

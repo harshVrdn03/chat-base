@@ -8,6 +8,4 @@ export * from "./chat-bot-new.page";
 export * from "./on-boarding.page";
 export * from "./chat-bot-users.page";
 export * from "./chat-bot-user-responses.page";
-
-
-
+export * from "./auth-callback.page";

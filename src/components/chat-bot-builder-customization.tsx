@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -14,37 +13,36 @@ import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { Switch } from "./ui/switch";
 import { Textarea } from "./ui/textarea";
 import { Info, Lightbulb, Plus, X } from "lucide-react";
+import type { ChatBotFormData } from "@/validations";
+import { useFormContext, useWatch } from "react-hook-form";
 
 export default function ChatBotBuilderCustomization() {
-  const [welcomeEnabled, setWelcomeEnabled] = useState(true);
-  const [welcomeMessage, setWelcomeMessage] = useState(
-    "Hi there! I'm your new assistant. Ask me anything."
-  );
-  const [suggestedQuestions, setSuggestedQuestions] = useState<string[]>([
-    "What can you do?",
-    "Show me quick tips",
-  ]);
-  const [captureEmail, setCaptureEmail] = useState(false);
-  const [fallbackResponse, setFallbackResponse] = useState(
-    "I'm still learning. Let me collect this and follow up shortly."
-  );
+  const { setValue, control } = useFormContext<ChatBotFormData>();
+
+  const conversation = useWatch({
+    name: "conversation",
+    control: control,
+  });
+
+  const suggestions = useWatch({
+    name: "suggestions",
+    control: control,
+  });
 
   const addQuestion = () => {
-    setSuggestedQuestions((prev) => [...prev, ""]);
+    setValue("suggestions", [...(suggestions || []), ""]);
   };
 
   const removeQuestion = (index: number) => {
-    setSuggestedQuestions((prev) =>
-      prev.filter((_, questionIndex) => questionIndex !== index)
-    );
+    const updatedSuggestions = [...(suggestions || [])];
+    updatedSuggestions.splice(index, 1);
+    setValue("suggestions", updatedSuggestions);
   };
 
   const handleQuestionChange = (index: number, value: string) => {
-    setSuggestedQuestions((prev) => {
-      const next = [...prev];
-      next[index] = value;
-      return next;
-    });
+    const updatedSuggestions = [...(suggestions || [])];
+    updatedSuggestions[index] = value;
+    setValue("suggestions", updatedSuggestions);
   };
 
   return (
@@ -66,12 +64,14 @@ export default function ChatBotBuilderCustomization() {
                 </p>
               </div>
               <Switch
-                checked={welcomeEnabled}
-                onCheckedChange={setWelcomeEnabled}
+                checked={conversation?.showWelcomeMessage}
+                onCheckedChange={(value) => {
+                  setValue("conversation.showWelcomeMessage", value);
+                }}
               />
             </div>
 
-            {welcomeEnabled && (
+            {conversation?.showWelcomeMessage && (
               <div className="space-y-3">
                 <Label
                   htmlFor="welcome-message"
@@ -82,8 +82,10 @@ export default function ChatBotBuilderCustomization() {
                 <Textarea
                   id="welcome-message"
                   rows={3}
-                  value={welcomeMessage}
-                  onChange={(event) => setWelcomeMessage(event.target.value)}
+                  value={conversation?.welcomeMessage}
+                  onChange={(event) =>
+                    setValue("conversation.welcomeMessage", event.target.value)
+                  }
                   placeholder="Hello! How can I help you today?"
                   className="resize-none"
                 />
@@ -108,7 +110,7 @@ export default function ChatBotBuilderCustomization() {
                 variant="outline"
                 size="sm"
                 onClick={addQuestion}
-                disabled={suggestedQuestions.length >= 5}
+                disabled={Array.isArray(suggestions) && suggestions.length >= 5}
               >
                 <Plus className="h-4 w-4 mr-1" />
                 Add
@@ -116,7 +118,7 @@ export default function ChatBotBuilderCustomization() {
             </div>
 
             <div className="space-y-3">
-              {suggestedQuestions.map((question, index) => (
+              {suggestions?.map((question, index) => (
                 <div key={index} className="flex items-center gap-2">
                   <Input
                     value={question}
@@ -131,7 +133,7 @@ export default function ChatBotBuilderCustomization() {
                     variant="ghost"
                     size="icon"
                     onClick={() => removeQuestion(index)}
-                    disabled={suggestedQuestions.length <= 1}
+                    disabled={suggestions.length <= 1}
                     className="h-9 w-9 text-muted-foreground hover:text-destructive"
                   >
                     <X className="h-4 w-4" />
@@ -160,12 +162,14 @@ export default function ChatBotBuilderCustomization() {
                 </p>
               </div>
               <Switch
-                checked={captureEmail}
-                onCheckedChange={setCaptureEmail}
+                checked={conversation?.emailCapture}
+                onCheckedChange={(value) =>
+                  setValue("conversation.emailCapture", value)
+                }
               />
             </div>
 
-            {captureEmail && (
+            {conversation?.emailCapture && (
               <Alert className="bg-blue-50 border-blue-200">
                 <Info className="h-4 w-4 text-blue-600" />
                 <AlertTitle>Email capture enabled</AlertTitle>
@@ -184,8 +188,10 @@ export default function ChatBotBuilderCustomization() {
             <Textarea
               id="fallback-message"
               rows={4}
-              value={fallbackResponse}
-              onChange={(event) => setFallbackResponse(event.target.value)}
+              value={conversation?.fallbackMessage}
+              onChange={(event) =>
+                setValue("conversation.fallbackMessage", event.target.value)
+              }
               placeholder="I'm not sure about that. Could you please rephrase your question?"
               className="resize-none"
             />
