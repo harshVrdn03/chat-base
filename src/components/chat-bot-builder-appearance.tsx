@@ -9,7 +9,6 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
-import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -24,43 +23,9 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import {
-  Check,
-  ChevronsUpDown,
-  Palette,
-  Type,
-  Image,
-  Layout,
-  Settings,
-} from "lucide-react";
-import { Checkbox } from "./ui/checkbox";
-
-interface AppearanceState {
-  brandColor: string;
-  contrastColor: string;
-  backgroundColor: string;
-  messageColor: string;
-  userMessageColor: string;
-  typeface: string;
-  fontSize: number;
-  fontWeight: string;
-  avatarStyle: string;
-  avatarUrl: string;
-  showAvatar: boolean;
-  roundedCorners: boolean;
-  borderWidth: number;
-  borderColor: string;
-  widgetPosition: string;
-  showLauncher: boolean;
-  launcherLabel: string;
-  launcherSize: number;
-  messageAlignment: string;
-  showTimestamps: boolean;
-  animationStyle: string;
-  shadowIntensity: number;
-  opacity: number;
-  customCSS: string;
-}
+import { Check, ChevronsUpDown } from "lucide-react";
+import type { AppearanceState } from "@/types";
+import { chatBotAppearanceSections } from "@/constants";
 
 export default function ChatBotAppearanceEditor() {
   const [appearance, setAppearance] = useState<AppearanceState>({
@@ -74,16 +39,16 @@ export default function ChatBotAppearanceEditor() {
     fontWeight: "normal",
     avatarStyle: "bubble",
     avatarUrl: "",
-    showAvatar: true,
-    roundedCorners: true,
+    showAvatar: "true",
+    roundedCorners: "true",
     borderWidth: 1,
     borderColor: "#e2e8f0",
     widgetPosition: "bottom-right",
-    showLauncher: true,
+    showLauncher: "true",
     launcherLabel: "Need product guidance?",
     launcherSize: 56,
     messageAlignment: "left",
-    showTimestamps: true,
+    showTimestamps: "true",
     animationStyle: "slide",
     shadowIntensity: 20,
     opacity: 100,
@@ -94,136 +59,7 @@ export default function ChatBotAppearanceEditor() {
     setAppearance((prev) => ({ ...prev, [key]: value }));
   };
 
-  const fieldGroups = [
-    {
-      title: "Colors",
-      description: "Define your chatbot's color palette",
-      icon: Palette,
-      fields: [
-        { key: "brandColor", label: "Brand Color", type: "color" },
-        { key: "contrastColor", label: "Contrast Color", type: "color" },
-        { key: "backgroundColor", label: "Background Color", type: "color" },
-        { key: "messageColor", label: "Message Color", type: "color" },
-        { key: "userMessageColor", label: "User Message Color", type: "color" },
-      ],
-    },
-    {
-      title: "Typography",
-      description: "Customize text appearance and style",
-      icon: Type,
-      fields: [
-        {
-          key: "typeface",
-          label: "Typeface",
-          type: "select",
-          options: [
-            "Inter",
-            "Arial",
-            "Helvetica",
-            "Roboto",
-            "Open Sans",
-            "Lato",
-          ],
-        },
-        {
-          key: "fontWeight",
-          label: "Font Weight",
-          type: "select",
-          options: ["light", "normal", "medium", "semibold", "bold"],
-        },
-        {
-          key: "fontSize",
-          label: "Font Size",
-          type: "slider",
-          min: 12,
-          max: 20,
-          step: 1,
-        },
-      ],
-    },
-    {
-      title: "Avatar & Style",
-      description: "Customize avatar display and style",
-      icon: Image,
-      fields: [
-        {
-          key: "showAvatar",
-          label: "Show Avatar",
-          type: "switch",
-        },
-        {
-          key: "avatarStyle",
-          label: "Avatar Style",
-          type: "select",
-          options: ["bubble", "square", "rounded"],
-        },
-        {
-          key: "avatarUrl",
-          label: "Avatar URL",
-          type: "text",
-        },
-      ],
-    },
-    {
-      title: "Widget",
-      description: "Configure widget position and launcher",
-      icon: Layout,
-      fields: [
-        {
-          key: "showLauncher",
-          label: "Show Launcher",
-          type: "switch",
-        },
-        {
-          key: "widgetPosition",
-          label: "Widget Position",
-          type: "select",
-          options: ["bottom-right", "bottom-left", "top-right", "top-left"],
-        },
-        {
-          key: "launcherSize",
-          label: "Launcher Size",
-          type: "slider",
-          min: 40,
-          max: 80,
-          step: 4,
-        },
-      ],
-    },
-    {
-      title: "Advanced",
-      description: "Fine-tune visual effects and styling",
-      icon: Settings,
-      fields: [
-        {
-          key: "roundedCorners",
-          label: "Rounded Corners",
-          type: "switch",
-        },
-        {
-          key: "borderWidth",
-          label: "Border Width",
-          type: "slider",
-          min: 0,
-          max: 5,
-          step: 1,
-        },
-        {
-          key: "shadowIntensity",
-          label: "Shadow Intensity",
-          type: "slider",
-          min: 0,
-          max: 50,
-          step: 5,
-        },
-        {
-          key: "customCSS",
-          label: "Custom CSS",
-          type: "textarea",
-        },
-      ],
-    },
-  ];
+  const fieldGroups = chatBotAppearanceSections;
 
   const renderField = (field: any) => {
     const value = appearance[field.key as keyof AppearanceState];
@@ -269,8 +105,21 @@ export default function ChatBotAppearanceEditor() {
 
       case "switch":
         return (
-          <div className="flex items-center justify-between">
-            <Label htmlFor={field.key}>{field.label}</Label>
+          <div className="flex items-center justify-between gap-4 py-2">
+            <Label
+              htmlFor={field.key}
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              {field.label}
+            </Label>
+            {/* <Switch
+              id={field.key}
+              checked={value as boolean}
+              onCheckedChange={(checked) =>
+                updateAppearance(field.key, checked)
+              }
+              className="flex-shrink-0 data-[state=checked]:bg-primary"
+            /> */}
             {/* <Checkbox
               id={field.key}
               checked={value as boolean}
